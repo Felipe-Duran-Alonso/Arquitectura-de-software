@@ -1,0 +1,27 @@
+services:
+    contAPI:
+        build: ./API/
+        image: dockerfile
+        container_name: fastapi_serv
+        ports:
+            - "8000:3001"
+        volumes:
+            - "./logs:/app/logs"
+    contPRO:
+        image: grafana/promtail
+        container_name: promtail_serv
+        volumes:
+            - ./promtail-config.yml:/etc/promtail/promtail-config.yml #Paso el archivo de configuracion 
+            - ./logs:/var/log/fastapi
+        command: -config.file=/etc/promtail/promtail-config.yml           #Aplico la configuracion
+
+    contLOK:
+        image: grafana/loki
+        container_name: loki_serv
+        ports:
+            - "8001:3100" #Por dejecto loki escucha ese puerto(3100)
+    contGRA:
+        image: grafana/grafana
+        container_name: grafana_serv
+        ports:
+            - "8002:3000" #Por defecto grafana escuha este puerto(3000)       
